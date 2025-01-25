@@ -1,19 +1,61 @@
 import { memo } from "react";
+import { motion } from "motion/react";
+
 import { ArrowDownTrayIcon, ShareIcon } from "@heroicons/react/16/solid";
+import { TextShimmer } from "@/components/animation/text-shimmer";
+
 import { formatTime, formatRate } from "@/lib/formatting";
 import { exportToCSV } from "@/lib/exportUtils";
 
 export const TestResults = memo(({ data, loading, averages }) => {
+  const loadingMessages = [
+    "Initializing test...",
+    "Processing results...",
+    "Almost there...",
+    "Loading more results...",
+  ];
+
   return (
     <div className="space-y-4">
       {data.map((response, index) => (
-        <ResultItem key={index} response={response} />
+        <motion.div
+          key={index}
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+        >
+          <ResultItem response={response} />
+        </motion.div>
       ))}
-      {loading && <div className="text-zinc-700">Loading more Results...</div>}
+      {loading && (
+        <motion.div
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <TextShimmer
+            duration={1.2}
+            className="[--base-color:var(--color-zinc-700)] [--base-gradient-color:var(--color-zinc-200)]"
+          >
+            {loadingMessages[data.length % loadingMessages.length]}
+          </TextShimmer>
+        </motion.div>
+      )}
       {!loading && data.length > 0 && (
         <>
-          <AveragesSection averages={averages} />
-          <ActionButtons data={data} averages={averages} />
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <AveragesSection averages={averages} />
+          </motion.div>
+          <motion.div
+            initial={{ scale: 0.95, y: 20, opacity: 0 }}
+            animate={{ scale: 1, y: 0, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <ActionButtons data={data} averages={averages} />
+          </motion.div>
         </>
       )}
     </div>
