@@ -39,6 +39,11 @@ export default function ModelSelector() {
               <ModelListItem item={item} />
             </SelectItem>
           ))}
+          {error && (
+            <SelectItem value="error" disabled>
+              Error loading models
+            </SelectItem>
+          )}
         </SelectContent>
       </Select>
       <div className="flex items-center gap-1.5 mt-3">
