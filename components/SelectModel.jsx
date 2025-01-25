@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -16,8 +17,7 @@ export default function ModelSelector() {
   const [selectedModel, setSelectedModel] = useState(null);
   const { models, loading, error } = useModels();
 
-  if (error)
-    return <div className="text-red-500">Error loading models: {error}</div>;
+  if (error) toast.error("Error occurred connecting to Ollama");
   if (selectedModel) return <TestModel model={selectedModel} />;
 
   return (

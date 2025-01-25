@@ -1,3 +1,4 @@
+import { Toaster } from "sonner";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -24,6 +25,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-100 text-zinc-900 relative`}
       >
         {children}
+        <Toaster />
         <footer className="absolute bottom-5 right-1/2 translate-x-1/2 text-zinc-700 text-sm text-center text-balance">
           Made by{" "}
           <a
