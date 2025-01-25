@@ -13,7 +13,8 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "LLMs Speed Test",
-  description: "Test every installed model and compare their completion speed.",
+  description:
+    "Benchmark Your LLMs in Seconds! Compare Model Speeds, Analyze Performance Metrics & Optimize AI Efficiency – All in One Place. Test, Export, Dominate.",
 };
 
 export default function RootLayout({ children }) {

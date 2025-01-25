@@ -23,8 +23,8 @@ export default function ModelSelector() {
   return (
     <>
       <h1 className="text-4xl font-bold text-zinc-900">LLMs Speed Test</h1>
-      <p className="mt-2 mb-4 text-zinc-700">
-        Test every installed model and compare their completion speed.
+      <p className="mt-2 mb-4 text-zinc-700 max-w-sm mx-auto text-balance text-center">
+        Benchmark your Local LLMs in Seconds!
       </p>
       <Select onValueChange={setSelectedModel}>
         <SelectTrigger className="h-auto w-fit mx-auto ps-3 border border-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0">
