@@ -62,16 +62,22 @@ const MetricRow = ({ label, value }) => (
 
 const ActionButtons = ({ data, averages }) => (
   <div className="flex items-center justify-center gap-2 mt-4 text-zinc-800">
-    <button className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors">
+    <button
+      disabled
+      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
+    >
       <ArrowDownTrayIcon className="size-4" /> PNG
     </button>
     <button
       onClick={() => exportToCSV(data, averages)}
-      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors"
+      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
     >
       <ArrowDownTrayIcon className="size-4" /> CSV
     </button>
-    <button className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors">
+    <button
+      disabled
+      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
+    >
       <ShareIcon className="size-4" /> Share
     </button>
   </div>
