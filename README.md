@@ -1,3 +1,5 @@
+<img alt="LLMs Speed Test" src="/public/og-image.png">
+
 A web application for testing and comparing different Language Model implementations.
 
 ## Features

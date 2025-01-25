@@ -13,9 +13,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
+  metadataBase: "https://llms-speed-test.vercel.app",
   title: "LLMs Speed Test",
   description:
-    "Benchmark Your LLMs in Seconds! Compare Model Speeds, Analyze Performance Metrics & Optimize AI Efficiency – All in One Place. Test, Export, Dominate.",
+    "Benchmark Your LLMs in Seconds! Compare Model Speeds, Analyze Performance Metrics & Optimize AI Efficiency - All in One Place. Test, Export, Dominate.",
+  openGraph: {
+    images: [
+      {
+        url: `/og-image.png`,
+        width: 843,
+        height: 441,
+      },
+    ],
+  },
 };
 
 export default function RootLayout({ children }) {
