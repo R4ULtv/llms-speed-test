@@ -15,7 +15,7 @@ export const TestModel = ({ model }) => {
 };
 
 const ModelHeader = ({ model }) => (
-  <div className="border-b border-dashed pb-2">
+  <div className="border-b border-dashed border-zinc-300 pb-2">
     <h3 className="text-lg font-semibold">Model: {model}</h3>
     <p className="text-zinc-700">
       {new Date().toLocaleDateString("en-US", {

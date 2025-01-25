@@ -10,7 +10,7 @@ export const ModelListItem = memo(({ item }) => (
         <span className="text-base font-semibold">
           {formatModelName(item.name).baseName}
         </span>
-        <span className="text-sm text-blue-500 font-semibold px-1 py-0.5 rounded bg-blue-100">
+        <span className="text-sm text-blue-500 font-semibold px-1 py-0.5 rounded-sm bg-blue-100">
           {item.details.parameter_size}
         </span>
       </div>
