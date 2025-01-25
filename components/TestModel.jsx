@@ -7,7 +7,7 @@ export const TestModel = ({ model }) => {
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm mx-auto border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl hover:scale-[1.02] transition ease-out">
+    <div className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm mx-auto border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl transition-shadow ease-out">
       <ModelHeader model={model} />
       <TestResults data={data} loading={loading} averages={averages} />
     </div>
