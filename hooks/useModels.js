@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ollama from "ollama/browser";
+import { getOllamaClient } from "@/lib/ollamaClient";
 
 export const useModels = () => {
   const [models, setModels] = useState([]);
@@ -11,6 +11,7 @@ export const useModels = () => {
 
     const fetchModels = async () => {
       try {
+        const ollama = getOllamaClient();
         const data = await ollama.list();
         if (mounted) setModels(data.models);
       } catch (err) {

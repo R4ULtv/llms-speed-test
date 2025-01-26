@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import ollama from "ollama/browser";
-import { TEST_PROMPTS } from "@/lib/constants";
+import { getOllamaClient } from "@/lib/ollamaClient";
+import { DEFAULT_PROMPTS, EASY_PROMPTS, HARD_PROMPTS } from "@/lib/constants";
 
 export const useModelTest = (model) => {
   const [loading, setLoading] = useState(true);
@@ -10,8 +10,16 @@ export const useModelTest = (model) => {
 
   useEffect(() => {
     const testModel = async () => {
+      const difficulty = localStorage.getItem("difficulty") || "default";
+      const PROMPTS =
+        difficulty === "easy"
+          ? EASY_PROMPTS
+          : difficulty === "hard"
+            ? HARD_PROMPTS
+            : DEFAULT_PROMPTS;
       try {
-        for (const prompt of TEST_PROMPTS) {
+        for (const prompt of PROMPTS) {
+          const ollama = getOllamaClient();
           const response = await ollama.generate({
             model,
             prompt,
