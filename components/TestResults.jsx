@@ -5,9 +5,9 @@ import { ArrowDownTrayIcon, ShareIcon } from "@heroicons/react/16/solid";
 import { TextShimmer } from "@/components/animation/text-shimmer";
 
 import { formatTime, formatRate } from "@/lib/formatting";
-import { exportToCSV } from "@/lib/exportUtils";
+import { exportToCSV, exportToPNG, handleShare } from "@/lib/exportUtils";
 
-export const TestResults = memo(({ data, loading, averages }) => {
+export const TestResults = memo(({ data, loading, averages, componentRef }) => {
   const loadingMessages = [
     "Initializing test...",
     "Processing results...",
@@ -54,7 +54,11 @@ export const TestResults = memo(({ data, loading, averages }) => {
             animate={{ scale: 1, y: 0, opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <ActionButtons data={data} averages={averages} />
+            <ActionButtons
+              data={data}
+              averages={averages}
+              componentRef={componentRef}
+            />
           </motion.div>
         </>
       )}
@@ -102,10 +106,13 @@ const MetricRow = ({ label, value }) => (
   </div>
 );
 
-const ActionButtons = ({ data, averages }) => (
-  <div className="flex items-center justify-center gap-2 mt-4 text-zinc-800">
+const ActionButtons = ({ data, averages, componentRef }) => (
+  <div
+    id="actions"
+    className="flex items-center justify-center gap-2 mt-4 text-zinc-800"
+  >
     <button
-      disabled
+      onClick={() => exportToPNG(componentRef.current, data[0]?.model)}
       className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
     >
       <ArrowDownTrayIcon className="size-4" /> PNG
@@ -117,7 +124,7 @@ const ActionButtons = ({ data, averages }) => (
       <ArrowDownTrayIcon className="size-4" /> CSV
     </button>
     <button
-      disabled
+      onClick={() => handleShare(componentRef.current, data[0]?.model)}
       className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
     >
       <ShareIcon className="size-4" /> Share

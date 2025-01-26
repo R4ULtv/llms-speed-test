@@ -1,20 +1,28 @@
+import { useRef } from "react";
 import { motion } from "motion/react";
 import { TestResults } from "@/components/TestResults";
 import { useModelTest } from "@/hooks/useModelTest";
 
 export const TestModel = ({ model }) => {
+  const componentRef = useRef();
   const { data, loading, error, averages } = useModelTest(model);
 
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
     <motion.div
+      ref={componentRef}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm mx-auto border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl transition-shadow ease-out"
     >
       <ModelHeader model={model} />
-      <TestResults data={data} loading={loading} averages={averages} />
+      <TestResults
+        data={data}
+        loading={loading}
+        averages={averages}
+        componentRef={componentRef}
+      />
     </motion.div>
   );
 };
