@@ -12,6 +12,7 @@ import {
 import { ModelListItem } from "@/components/ModelListItem";
 import { TestModel } from "@/components/TestModel";
 import { useModels } from "@/hooks/useModels";
+import Settings from "@/components/Settings";
 
 export default function ModelSelector() {
   const [selectedModel, setSelectedModel] = useState(null);
@@ -26,26 +27,29 @@ export default function ModelSelector() {
       <p className="mt-2 mb-4 text-zinc-700 max-w-sm mx-auto text-balance text-center">
         Benchmark your Local LLMs in Seconds!
       </p>
-      <Select onValueChange={setSelectedModel}>
-        <SelectTrigger className="h-auto w-fit mx-auto ps-3 border border-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0">
-          <SelectValue placeholder="Select a model from ollama" />
-        </SelectTrigger>
-        <SelectContent
-          align="center"
-          className="[&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]]:pe-12 [&_*[role=option]]:ps-2"
-        >
-          {models.map((item) => (
-            <SelectItem key={item.name} value={item.name}>
-              <ModelListItem item={item} />
-            </SelectItem>
-          ))}
-          {error && (
-            <SelectItem value="error" disabled>
-              Error loading models
-            </SelectItem>
-          )}
-        </SelectContent>
-      </Select>
+      <div className="flex items-center gap-2">
+        <Select onValueChange={setSelectedModel}>
+          <SelectTrigger className="h-auto w-fit mx-auto ps-3 gap-1.5 border border-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0">
+            <SelectValue placeholder="Select a model from ollama" />
+          </SelectTrigger>
+          <SelectContent
+            align="center"
+            className="[&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]]:pe-12 [&_*[role=option]]:ps-2"
+          >
+            {models.map((item) => (
+              <SelectItem key={item.name} value={item.name}>
+                <ModelListItem item={item} />
+              </SelectItem>
+            ))}
+            {error && (
+              <SelectItem value="error" disabled>
+                Error loading models
+              </SelectItem>
+            )}
+          </SelectContent>
+        </Select>
+        <Settings />
+      </div>
       <div className="flex items-center gap-1.5 mt-3">
         {models.length > 0 &&
           models.slice(0, 3).map((item) => (
