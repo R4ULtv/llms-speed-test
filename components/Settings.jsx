@@ -46,7 +46,7 @@ export default function Settings() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger className="border border-zinc-200 p-2.5 rounded-lg">
-        <Cog6ToothIcon className="size-4" />
+        <Cog6ToothIcon className="size-4 text-zinc-800" />
       </DialogTrigger>
       <DialogContent className="max-w-md">
         <div className="flex flex-col items-center gap-2">
@@ -58,7 +58,7 @@ export default function Settings() {
           </DialogHeader>
         </div>
 
-        <form className="space-y-5">
+        <form className="space-y-4">
           <div className="space-y-2">
             <label htmlFor="host" className="text-sm font-medium text-zinc-700">
               Ollama Host
@@ -71,6 +71,21 @@ export default function Settings() {
               onChange={(e) => setHost(e.target.value)}
               className="mt-1"
             />
+            <p className="text-xs text-zinc-700">
+              Remember to set{" "}
+              <span className="font-mono text-zinc-900 bg-zinc-200 px-1 py-0.5 rounded-xs">
+                OLLAMA_ORIGINS = *
+              </span>
+              . Follow the instructions{" "}
+              <a
+                href="https://github.com/ollama/ollama/blob/main/docs/faq.md#how-do-i-configure-ollama-server"
+                target="_blank"
+                className="text-zinc-900 hover:underline underline-offset-2"
+              >
+                here
+              </a>
+              .
+            </p>
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-zinc-700">
@@ -91,7 +106,7 @@ export default function Settings() {
             <DialogClose asChild>
               <button
                 type="button"
-                className="flex-1 border border-zinc-300 p-1 rounded-lg"
+                className="flex-1 border border-zinc-300 p-2 sm:p-1.5 rounded-lg"
               >
                 Cancel
               </button>
@@ -99,7 +114,7 @@ export default function Settings() {
             <button
               onClick={handleSave}
               type="button"
-              className="flex-1 p-1 bg-zinc-900 text-zinc-100 rounded-lg"
+              className="flex-1 p-2 sm:p-1.5 bg-zinc-900 text-zinc-100 rounded-lg"
             >
               Save
             </button>
