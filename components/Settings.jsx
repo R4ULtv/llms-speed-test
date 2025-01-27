@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Cog6ToothIcon } from "@heroicons/react/16/solid";
+import { ArrowUturnLeftIcon, Cog6ToothIcon } from "@heroicons/react/16/solid";
 
 import {
   Dialog,
@@ -53,7 +53,7 @@ export default function Settings() {
           <DialogHeader>
             <DialogTitle className="sm:text-center">Settings</DialogTitle>
             <DialogDescription className="sm:text-center">
-              Configure the host or other settings for the Speed Test.
+              Configure your Ollama host and test difficulty settings.
             </DialogDescription>
           </DialogHeader>
         </div>
@@ -63,14 +63,27 @@ export default function Settings() {
             <label htmlFor="host" className="text-sm font-medium text-zinc-700">
               Ollama Host
             </label>
-            <Input
-              id="host"
-              type="text"
-              placeholder={DEFAULT_HOST}
-              value={host}
-              onChange={(e) => setHost(e.target.value)}
-              className="mt-1"
-            />
+            <div className="relative">
+              <Input
+                id="host"
+                type="url"
+                placeholder={DEFAULT_HOST}
+                value={host}
+                onChange={(e) => setHost(e.target.value)}
+                className="mt-1 rounded-lg"
+              />
+              {host !== DEFAULT_HOST && (
+                <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <button
+                    type="button"
+                    onClick={() => setHost(DEFAULT_HOST)}
+                    className="text-xs text-zinc-700 hover:underline"
+                  >
+                    <ArrowUturnLeftIcon className="size-3" />
+                  </button>
+                </span>
+              )}
+            </div>
             <p className="text-xs text-zinc-700">
               Remember to set{" "}
               <span className="font-mono text-zinc-900 bg-zinc-200 px-1 py-0.5 rounded-xs">
@@ -92,7 +105,7 @@ export default function Settings() {
               Test Difficulty
             </label>
             <Select value={difficulty} onValueChange={setDifficulty}>
-              <SelectTrigger className="mt-1">
+              <SelectTrigger className="mt-1 h-10 rounded-lg">
                 <SelectValue placeholder="Select Difficulty" />
               </SelectTrigger>
               <SelectContent className="[&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]]:pe-8 [&_*[role=option]]:ps-2">
