@@ -13,13 +13,26 @@ import { ModelListItem } from "@/components/ModelListItem";
 import { TestModel } from "@/components/TestModel";
 import { useModels } from "@/hooks/useModels";
 import Settings from "@/components/Settings";
+import { ArrowLeftIcon, ArrowLongLeftIcon } from "@heroicons/react/16/solid";
 
 export default function ModelSelector() {
   const [selectedModel, setSelectedModel] = useState(null);
   const { models, loading, error } = useModels();
 
   if (error) toast.error("Error occurred connecting to Ollama");
-  if (selectedModel) return <TestModel model={selectedModel} />;
+  if (selectedModel)
+    return (
+      <div className="w-full max-w-sm mx-auto relative">
+        <button
+          aria-label="Go Back"
+          onClick={() => setSelectedModel(null)}
+          className="flex gap-1 text-xs absolute -top-5 hover:underline text-zinc-700 underline-offset-1"
+        >
+          ← Go Back
+        </button>
+        <TestModel model={selectedModel} />
+      </div>
+    );
 
   return (
     <>
