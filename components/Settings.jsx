@@ -45,7 +45,10 @@ export default function Settings() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="border border-zinc-200 p-2.5 rounded-lg">
+      <DialogTrigger
+        aria-label="Settings"
+        className="border border-zinc-200 p-2.5 rounded-lg"
+      >
         <Cog6ToothIcon className="size-4 text-zinc-800" />
       </DialogTrigger>
       <DialogContent className="max-w-md">

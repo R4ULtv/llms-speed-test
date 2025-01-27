@@ -29,7 +29,10 @@ export default function ModelSelector() {
       </p>
       <div className="flex items-center gap-2">
         <Select onValueChange={setSelectedModel}>
-          <SelectTrigger className="h-auto w-fit mx-auto ps-3 gap-1.5 border border-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0">
+          <SelectTrigger
+            aria-label="Select Model"
+            className="h-auto w-fit mx-auto ps-3 gap-1.5 border border-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0"
+          >
             <SelectValue placeholder="Select a model from ollama" />
           </SelectTrigger>
           <SelectContent
@@ -51,7 +54,15 @@ export default function ModelSelector() {
         <Settings />
       </div>
       <div className="flex items-center gap-1.5 mt-3">
-        {models.length > 0 &&
+        {loading && (
+          <>
+            <div className="w-20 h-7 border border-zinc-200 animate-pulse rounded-lg" />
+            <div className="w-20 h-7 border border-zinc-200 animate-pulse rounded-lg" />
+            <div className="w-20 h-7 border border-zinc-200 animate-pulse rounded-lg" />
+          </>
+        )}
+        {!loading &&
+          models.length > 0 &&
           models.slice(0, 3).map((item) => (
             <button
               key={item.name}
