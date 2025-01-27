@@ -55,7 +55,7 @@ export default function RunningModels() {
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
-          className="absolute top-5 border border-zinc-200 px-3 py-1.5 rounded-full"
+          className="absolute top-5 border border-zinc-200 shadow px-3 py-1.5 rounded-full"
         >
           <div className="flex items-center gap-2">
             <div className="relative flex size-2">
