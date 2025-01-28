@@ -113,19 +113,19 @@ const ActionButtons = ({ data, averages, componentRef }) => (
   >
     <button
       onClick={() => exportToPNG(componentRef.current, data[0]?.model)}
-      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
+      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 hover:scale-105 transition-transform ease-out disabled:opacity-50"
     >
       <ArrowDownTrayIcon className="size-4" /> PNG
     </button>
     <button
       onClick={() => exportToCSV(data, averages)}
-      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
+      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 hover:scale-105 transition-transform ease-out disabled:opacity-50"
     >
       <ArrowDownTrayIcon className="size-4" /> CSV
     </button>
     <button
       onClick={() => handleShare(componentRef.current, data[0]?.model)}
-      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 border border-transparent hover:border-zinc-300 transition-colors disabled:hover:border-transparent disabled:opacity-50"
+      className="px-2.5 py-1.5 rounded-lg flex items-center gap-1 hover:scale-105 transition-transform ease-out disabled:opacity-50"
     >
       <ShareIcon className="size-4" /> Share
     </button>

@@ -13,7 +13,6 @@ import { ModelListItem } from "@/components/ModelListItem";
 import { TestModel } from "@/components/TestModel";
 import { useModels } from "@/hooks/useModels";
 import Settings from "@/components/Settings";
-import { ArrowLeftIcon, ArrowLongLeftIcon } from "@heroicons/react/16/solid";
 
 export default function ModelSelector() {
   const [selectedModel, setSelectedModel] = useState(null);
@@ -44,7 +43,7 @@ export default function ModelSelector() {
         <Select onValueChange={setSelectedModel}>
           <SelectTrigger
             aria-label="Select Model"
-            className="h-auto w-fit mx-auto ps-3 gap-1.5 border border-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0"
+            className="h-auto w-fit mx-auto ps-3 gap-1.5 shadow-none rounded-lg border border-zinc-200 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0"
           >
             <SelectValue placeholder="Select a model from ollama" />
           </SelectTrigger>
@@ -80,7 +79,7 @@ export default function ModelSelector() {
             <button
               key={item.name}
               onClick={() => setSelectedModel(item.name)}
-              className="text-xs px-2.5 py-1.5 font-semibold text-zinc-700 border border-zinc-200 rounded-lg hover:border-zinc-300 transition-colors ease-out"
+              className="text-xs px-2.5 py-1.5 font-semibold text-zinc-700 border border-zinc-200 rounded-lg"
             >
               {item.name}
             </button>
