@@ -21,27 +21,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const DEFAULT_HOST = "http://127.0.0.1:11434";
 const DEFAULT_DIFFICULTY = "default";
+const DEFAULT_STREAM_MODE = false;
 
 export default function Settings() {
   const [open, setOpen] = useState(false);
   const [host, setHost] = useState(DEFAULT_HOST);
   const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY);
+  const [streamMode, setStreamMode] = useState(DEFAULT_STREAM_MODE);
 
   useEffect(() => {
     const savedHost = localStorage.getItem("host");
     const savedDifficulty = localStorage.getItem("difficulty");
+    const savedStreamMode = localStorage.getItem("stream");
     if (savedHost) setHost(savedHost);
     if (savedDifficulty) setDifficulty(savedDifficulty);
-  }, []);
+    if (savedStreamMode !== null) setStreamMode(savedStreamMode === "true");
+  }, [open]);
 
   const handleSave = useCallback(() => {
     setOpen(false);
     localStorage.setItem("host", host);
     localStorage.setItem("difficulty", difficulty);
-  }, [host, difficulty]);
+    localStorage.setItem("stream", streamMode);
+  }, [host, difficulty, streamMode]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -102,6 +108,29 @@ export default function Settings() {
               </a>
               .
             </p>
+          </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="stream"
+              className="text-sm font-medium text-zinc-700"
+            >
+              Stream Mode
+            </label>
+            <div className="flex items-center gap-1.5 mt-1">
+              <Checkbox
+                id="stream"
+                checked={streamMode}
+                onCheckedChange={(e) => setStreamMode(e)}
+                className="rounded border-zinc-300"
+              />
+              <label htmlFor="stream" className="text-sm text-zinc-700">
+                Enable streaming responses. This can decrease the{" "}
+                <span className="font-mono text-xs text-zinc-900 bg-zinc-200 px-1 py-0.5 rounded-xs">
+                  token/s
+                </span>
+                .
+              </label>
+            </div>
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium text-zinc-700">

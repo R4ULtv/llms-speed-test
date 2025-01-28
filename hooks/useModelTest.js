@@ -20,11 +20,24 @@ export const useModelTest = (model) => {
       try {
         for (const prompt of PROMPTS) {
           const ollama = getOllamaClient();
-          const response = await ollama.generate({
-            model,
-            prompt,
-          });
-          setData((prev) => [...prev, response]);
+          const streamMode = localStorage.getItem("stream") === "true";
+
+          if (streamMode) {
+            const response = await ollama.generate({
+              model,
+              prompt,
+              stream: true,
+            });
+            for await (const part of response) {
+              if (part.done) setData((prev) => [...prev, part]);
+            }
+          } else {
+            const response = await ollama.generate({
+              model,
+              prompt,
+            });
+            setData((prev) => [...prev, response]);
+          }
         }
       } catch (err) {
         setError(err.message);
