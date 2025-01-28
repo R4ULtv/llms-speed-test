@@ -57,7 +57,10 @@ export default function Settings() {
       >
         <Cog6ToothIcon className="size-4 text-zinc-800" />
       </DialogTrigger>
-      <DialogContent className="max-w-md">
+      <DialogContent
+        className="max-w-md"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <div className="flex flex-col items-center gap-2">
           <DialogHeader>
             <DialogTitle className="sm:text-center">Settings</DialogTitle>
