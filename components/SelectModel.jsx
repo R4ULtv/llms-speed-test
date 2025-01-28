@@ -19,24 +19,12 @@ export default function ModelSelector() {
   const { models, loading, error } = useModels();
 
   if (error) toast.error("Error occurred connecting to Ollama");
-  if (selectedModel)
-    return (
-      <div className="w-full max-w-sm mx-auto relative">
-        <button
-          aria-label="Go Back"
-          onClick={() => setSelectedModel(null)}
-          className="flex gap-1 text-xs absolute -top-5 hover:underline text-zinc-700 underline-offset-1"
-        >
-          ← Go Back
-        </button>
-        <TestModel model={selectedModel} />
-      </div>
-    );
+  if (selectedModel) return <TestModel model={selectedModel} />;
 
   return (
     <>
       <h1 className="text-4xl font-bold text-zinc-900">LLMs Speed Test</h1>
-      <p className="mt-2 mb-4 text-zinc-700 max-w-sm mx-auto text-balance text-center">
+      <p className="mt-2 mb-6 text-zinc-700 max-w-sm mx-auto text-balance text-center">
         Benchmark your Local LLMs in Seconds!
       </p>
       <div className="flex items-center gap-2">
