@@ -112,9 +112,9 @@ export default function Settings() {
                 <SelectValue placeholder="Select Difficulty" />
               </SelectTrigger>
               <SelectContent className="[&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]]:pe-8 [&_*[role=option]]:ps-2">
-                <SelectItem value="easy">Easy</SelectItem>
-                <SelectItem value="default">Default</SelectItem>
-                <SelectItem value="hard">Hard</SelectItem>
+                <SelectItem value="easy">Easy (Fast)</SelectItem>
+                <SelectItem value="default">Default (Normal)</SelectItem>
+                <SelectItem value="hard">Hard (Slow)</SelectItem>
               </SelectContent>
             </Select>
           </div>
