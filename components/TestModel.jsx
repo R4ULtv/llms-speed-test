@@ -14,7 +14,7 @@ export const TestModel = ({ model }) => {
       ref={componentRef}
       initial={{ scale: 0.95, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
-      className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm mx-auto border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl transition-shadow ease-out"
+      className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm mx-auto border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl hover:-translate-y-1 transition ease-out"
     >
       <ModelHeader model={model} />
       <TestResults
