@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getOllamaClient } from "@/lib/ollamaClient";
 import { DEFAULT_PROMPTS, EASY_PROMPTS, HARD_PROMPTS } from "@/lib/constants";
 
@@ -7,47 +7,67 @@ export const useModelTest = (model) => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [textStreaming, setTextStreaming] = useState("");
+  const abortController = useRef(new AbortController());
   const isInitialRender = useRef(true);
+  const isMounted = useRef(true);
+
+  const ollama = useMemo(() => getOllamaClient(), []);
+
+  const processStreamResponse = useCallback(async (response, prompt) => {
+    setTextStreaming((prev) => prev + ` ${prompt} `);
+    for await (const part of response) {
+      if (!isMounted.current || abortController.current.signal.aborted) break;
+      setTextStreaming((prev) => prev + part.response);
+      if (part.done) {
+        setData((prev) => [...prev, part]);
+      }
+    }
+  }, []);
+
+  const processNonStreamResponse = useCallback(async (response) => {
+    if (isMounted.current) {
+      setData((prev) => [...prev, response]);
+    }
+  }, []);
 
   useEffect(() => {
+    isMounted.current = true;
+
     const testModel = async () => {
       const difficulty = localStorage.getItem("difficulty") || "default";
       const PROMPTS =
-        difficulty === "easy"
-          ? EASY_PROMPTS
-          : difficulty === "hard"
-            ? HARD_PROMPTS
-            : DEFAULT_PROMPTS;
+        {
+          easy: EASY_PROMPTS,
+          hard: HARD_PROMPTS,
+          default: DEFAULT_PROMPTS,
+        }[difficulty] || DEFAULT_PROMPTS;
+
+      const streamMode = localStorage.getItem("stream") === "true";
+
       try {
         for (const prompt of PROMPTS) {
-          const ollama = getOllamaClient();
-          const streamMode = localStorage.getItem("stream") === "true";
+          if (!isMounted.current || abortController.current.signal.aborted)
+            return;
 
-          if (streamMode) {
-            const response = await ollama.generate({
-              model,
-              prompt,
-              stream: true,
-            });
-            setTextStreaming((prev) => prev + ` ${prompt} `);
-            for await (const part of response) {
-              setTextStreaming((prev) => prev + part.response);
-              if (part.done) {
-                setData((prev) => [...prev, part]);
-              }
-            }
-          } else {
-            const response = await ollama.generate({
-              model,
-              prompt,
-            });
-            setData((prev) => [...prev, response]);
-          }
+          const response = await ollama.generate({
+            model,
+            prompt,
+            ...(streamMode && { stream: true }),
+            signal: abortController.current.signal,
+          });
+
+          await (streamMode
+            ? processStreamResponse(response, prompt)
+            : processNonStreamResponse(response));
         }
       } catch (err) {
-        setError(err.message);
+        if (isMounted.current && !abortController.current.signal.aborted) {
+          setError(err.message);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted.current && !abortController.current.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
@@ -55,28 +75,58 @@ export const useModelTest = (model) => {
       testModel();
       isInitialRender.current = false;
     }
-  }, [model]);
 
-  const averages = useMemo(
-    () => ({
-      totalDuration:
-        data.reduce((acc, curr) => acc + curr.total_duration, 0) / data.length,
-      loadDuration:
-        data.reduce((acc, curr) => acc + curr.load_duration, 0) / data.length,
+    return () => {
+      isMounted.current = false;
+    };
+  }, [model, processStreamResponse, processNonStreamResponse, ollama]);
+
+  const abort = useCallback(() => {
+    abortController.current.abort();
+    abortController.current = new AbortController();
+  }, []);
+
+  const averages = useMemo(() => {
+    if (!data.length)
+      return {
+        totalDuration: 0,
+        loadDuration: 0,
+        evalRate: { count: 0, duration: 0 },
+        promptEvalRate: { count: 0, duration: 0 },
+      };
+
+    const sum = data.reduce(
+      (acc, curr) => ({
+        totalDuration: acc.totalDuration + curr.total_duration,
+        loadDuration: acc.loadDuration + curr.load_duration,
+        evalCount: acc.evalCount + curr.eval_count,
+        evalDuration: acc.evalDuration + curr.eval_duration,
+        promptEvalCount: acc.promptEvalCount + curr.prompt_eval_count,
+        promptEvalDuration: acc.promptEvalDuration + curr.prompt_eval_duration,
+      }),
+      {
+        totalDuration: 0,
+        loadDuration: 0,
+        evalCount: 0,
+        evalDuration: 0,
+        promptEvalCount: 0,
+        promptEvalDuration: 0,
+      },
+    );
+
+    return {
+      totalDuration: sum.totalDuration / data.length,
+      loadDuration: sum.loadDuration / data.length,
       evalRate: {
-        count: data.reduce((acc, curr) => acc + curr.eval_count, 0),
-        duration: data.reduce((acc, curr) => acc + curr.eval_duration, 0),
+        count: sum.evalCount,
+        duration: sum.evalDuration,
       },
       promptEvalRate: {
-        count: data.reduce((acc, curr) => acc + curr.prompt_eval_count, 0),
-        duration: data.reduce(
-          (acc, curr) => acc + curr.prompt_eval_duration,
-          0,
-        ),
+        count: sum.promptEvalCount,
+        duration: sum.promptEvalDuration,
       },
-    }),
-    [data],
-  );
+    };
+  }, [data]);
 
-  return { data, loading, error, averages, textStreaming };
+  return { data, loading, error, averages, textStreaming, abort };
 };
