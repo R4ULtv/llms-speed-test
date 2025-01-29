@@ -19,7 +19,10 @@ export default function ModelSelector() {
   const { models, loading, error } = useModels();
 
   if (error) toast.error("Error occurred connecting to Ollama");
-  if (selectedModel) return <TestModel model={selectedModel} />;
+  if (selectedModel)
+    return (
+      <TestModel model={selectedModel} onBack={() => setSelectedModel(null)} />
+    );
 
   return (
     <>
