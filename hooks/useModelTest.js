@@ -6,6 +6,7 @@ export const useModelTest = (model) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
+  const [textStreaming, setTextStreaming] = useState("");
   const isInitialRender = useRef(true);
 
   useEffect(() => {
@@ -28,8 +29,12 @@ export const useModelTest = (model) => {
               prompt,
               stream: true,
             });
+            setTextStreaming((prev) => prev + ` ${prompt} `);
             for await (const part of response) {
-              if (part.done) setData((prev) => [...prev, part]);
+              setTextStreaming((prev) => prev + part.response);
+              if (part.done) {
+                setData((prev) => [...prev, part]);
+              }
             }
           } else {
             const response = await ollama.generate({
@@ -73,5 +78,5 @@ export const useModelTest = (model) => {
     [data],
   );
 
-  return { data, loading, error, averages };
+  return { data, loading, error, averages, textStreaming };
 };

@@ -5,25 +5,41 @@ import { useModelTest } from "@/hooks/useModelTest";
 
 export const TestModel = ({ model }) => {
   const componentRef = useRef();
-  const { data, loading, error, averages } = useModelTest(model);
+  const { data, loading, error, averages, textStreaming } = useModelTest(model);
 
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <motion.div
-      ref={componentRef}
-      initial={{ scale: 0.95, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm mx-auto border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl hover:-translate-y-1 transition ease-out"
-    >
-      <ModelHeader model={model} />
-      <TestResults
-        data={data}
-        loading={loading}
-        averages={averages}
-        componentRef={componentRef}
-      />
-    </motion.div>
+    <div className="flex items-center gap-6 w-full justify-center">
+      <motion.div
+        ref={componentRef}
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl hover:-translate-y-1 transition ease-out"
+      >
+        <ModelHeader model={model} />
+        <TestResults
+          data={data}
+          loading={loading}
+          averages={averages}
+          componentRef={componentRef}
+        />
+      </motion.div>
+      {textStreaming && (
+        <motion.div
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="flex flex-col gap-4 font-mono text-sm w-full max-w-sm max-h-[592px] border border-zinc-200 shadow-xl rounded-xl p-6 hover:shadow-2xl hover:-translate-y-1 transition ease-out"
+        >
+          <div className="border-b border-dashed border-zinc-300 pb-2 text-zinc-700">
+            Text Streaming
+          </div>
+          <div className="flex flex-col-reverse overflow-y-auto overflow-x-hidden">
+            {textStreaming}
+          </div>
+        </motion.div>
+      )}
+    </div>
   );
 };
 
