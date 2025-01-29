@@ -3,14 +3,24 @@ import { motion } from "motion/react";
 import { TestResults } from "@/components/TestResults";
 import { useModelTest } from "@/hooks/useModelTest";
 
-export const TestModel = ({ model }) => {
+export const TestModel = ({ model, onBack }) => {
   const componentRef = useRef();
-  const { data, loading, error, averages, textStreaming } = useModelTest(model);
+  const { data, loading, error, averages, textStreaming, abort } =
+    useModelTest(model);
 
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
-    <div className="flex items-center gap-6 w-full justify-center">
+    <div className="flex items-center gap-6 w-full justify-center relative">
+      <button
+        onClick={() => {
+          abort();
+          onBack();
+        }}
+        className="text-sm px-3 py-1.5 font-semibold text-zinc-700 border border-zinc-200 rounded-lg absolute -top-13 select-none"
+      >
+        ← Go Back
+      </button>
       <motion.div
         ref={componentRef}
         initial={{ scale: 0.95, opacity: 0 }}
