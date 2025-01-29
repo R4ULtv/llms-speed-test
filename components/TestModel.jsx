@@ -34,7 +34,7 @@ export const TestModel = ({ model }) => {
           <div className="border-b border-dashed border-zinc-300 pb-2 text-zinc-700">
             Text Streaming
           </div>
-          <div className="flex flex-col-reverse overflow-y-auto overflow-x-hidden">
+          <div className="flex flex-col-reverse overflow-y-auto overflow-x-hidden scrollbar-thin">
             {textStreaming}
           </div>
         </motion.div>
