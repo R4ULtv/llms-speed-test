@@ -26,7 +26,7 @@ export default function RunningModels() {
           setData(response.models);
         }
       } catch (err) {
-        console.error("Failed to fetch models:", err);
+        return;
       }
     };
 
