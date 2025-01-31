@@ -1,9 +1,11 @@
 import {
   DeepSeekIcon,
   GeminiIcon,
+  IBMIcon,
   MetaIcon,
   MicrosoftIcon,
   MistralIcon,
+  QwenIcon,
 } from "@/lib/icons";
 
 export const ModelIcon = ({ name }) => {
@@ -18,5 +20,8 @@ export const ModelIcon = ({ name }) => {
     return <MistralIcon className="size-6" />;
   if (lowercaseName.startsWith("gemma"))
     return <GeminiIcon className="size-6" />;
+  if (lowercaseName.startsWith("granite"))
+    return <IBMIcon className="size-6" />;
+  if (lowercaseName.startsWith("qwen")) return <QwenIcon className="size-6" />;
   return <div className="size-6" />;
 };
