@@ -13,6 +13,7 @@ import { ModelListItem } from "@/components/ModelListItem";
 import { TestModel } from "@/components/TestModel";
 import { useModels } from "@/hooks/useModels";
 import Settings from "@/components/Settings";
+import { SnappyLogo } from "@/lib/icons";
 
 export default function ModelSelector() {
   const [selectedModel, setSelectedModel] = useState(null);
@@ -26,7 +27,8 @@ export default function ModelSelector() {
 
   return (
     <>
-      <h1 className="text-4xl font-bold text-zinc-900">LLMs Speed Test</h1>
+      <SnappyLogo className="size-16 mb-4" />
+      <h1 className="text-4xl font-bold text-zinc-900">Snappy</h1>
       <p className="mt-2 mb-6 text-zinc-700 max-w-sm mx-auto text-balance text-center">
         Benchmark your Local LLMs in Seconds!
       </p>

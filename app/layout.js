@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   metadataBase: "https://llms-speed-test.vercel.app",
-  title: "LLMs Speed Test",
+  title: "Snappy - LLMs Speed Test",
   description:
     "Benchmark Your LLMs in Seconds! Compare Model Speeds, Analyze Performance Metrics & Optimize AI Efficiency - All in One Place. Test, Export, Dominate.",
   openGraph: {
