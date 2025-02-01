@@ -45,7 +45,7 @@ const SelectScrollUpButton = React.forwardRef(
       )}
       {...props}
     >
-      <ChevronUpIcon size={16} strokeWidth={2} />
+      <ChevronUpIcon className="size-4" />
     </SelectPrimitive.ScrollUpButton>
   ),
 );
@@ -61,7 +61,7 @@ const SelectScrollDownButton = React.forwardRef(
       )}
       {...props}
     >
-      <ChevronDownIcon size={16} strokeWidth={2} />
+      <ChevronDownIcon className="size-4" />
     </SelectPrimitive.ScrollDownButton>
   ),
 );
