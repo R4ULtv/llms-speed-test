@@ -8,10 +8,11 @@ export const useModelTest = (model) => {
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [textStreaming, setTextStreaming] = useState("");
+  const [globalAvgs, setGlobalAvgs] = useState(null);
   const abortController = useRef(new AbortController());
   const isInitialRender = useRef(true);
   const isMounted = useRef(true);
-  const { addModelTest } = useHistory();
+  const { addModelTest, getModelAverages } = useHistory();
 
   const ollama = useMemo(() => getOllamaClient(), []);
 
@@ -62,6 +63,7 @@ export const useModelTest = (model) => {
       const streamMode = localStorage.getItem("stream") === "true";
 
       try {
+        setGlobalAvgs(await getModelAverages(model));
         for (const prompt of PROMPTS) {
           if (!isMounted.current || abortController.current.signal.aborted)
             return;
@@ -142,6 +144,7 @@ export const useModelTest = (model) => {
         count: sum.promptEvalCount,
         duration: sum.promptEvalDuration,
       },
+      globalAvgs,
     };
   }, [data]);
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
 const DB_NAME = "HistoryDB";
 const DB_VERSION = 1;
@@ -28,20 +28,6 @@ export const initDB = () => {
 
 export const useHistory = () => {
   const [db, setDb] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setDb(await initDB());
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, []);
 
   const addModelTest = useCallback(
     async ({ modelName, difficulty, streamMode, results }) => {
@@ -74,41 +60,92 @@ export const useHistory = () => {
 
   const getModelTests = useCallback(
     async (modelName = null, limit = 50, offset = 0) => {
-      if (!db) return [];
+      try {
+        const database = db || (await initDB());
+        if (!db) setDb(database);
 
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], "readonly");
-        const store = transaction.objectStore(STORE_NAME);
-        const index = modelName
-          ? store.index("modelName")
-          : store.index("timestamp");
-        const tests = [];
-        let advanced = false;
+        return new Promise((resolve, reject) => {
+          const transaction = database.transaction([STORE_NAME], "readonly");
+          const store = transaction.objectStore(STORE_NAME);
+          const index = modelName
+            ? store.index("modelName")
+            : store.index("timestamp");
+          const tests = [];
+          let advanced = false;
 
-        const request = modelName
-          ? index.openCursor(IDBKeyRange.only(modelName), "prev")
-          : index.openCursor(null, "prev");
+          const request = modelName
+            ? index.openCursor(IDBKeyRange.only(modelName), "prev")
+            : index.openCursor(null, "prev");
 
-        request.onsuccess = (event) => {
-          const cursor = event.target.result;
-          if (!advanced && offset > 0) {
-            advanced = true;
-            cursor.advance(offset);
-            return;
-          }
+          request.onsuccess = (event) => {
+            const cursor = event.target.result;
+            if (!advanced && offset > 0) {
+              advanced = true;
+              cursor.advance(offset);
+              return;
+            }
 
-          if (cursor && tests.length < limit) {
-            tests.push(cursor.value);
-            cursor.continue();
-          } else {
-            resolve(tests);
-          }
-        };
+            if (cursor && tests.length < limit) {
+              tests.push(cursor.value);
+              cursor.continue();
+            } else {
+              resolve(tests);
+            }
+          };
 
-        request.onerror = () => reject(request.error);
-      });
+          request.onerror = () => reject(request.error);
+        });
+      } catch (err) {
+        console.error("Error getting model tests:", err);
+        return [];
+      }
     },
     [db],
+  );
+
+  const getModelAverages = useCallback(
+    async (modelName) => {
+      const database = db || (await initDB());
+      if (!db) setDb(database);
+
+      try {
+        const tests = await getModelTests(modelName);
+        if (!tests.length) return null;
+
+        const validTests = tests.filter((test) => test.results);
+        if (!validTests.length) return null;
+
+        const sums = validTests.reduce(
+          (acc, test) => ({
+            totalDuration: acc.totalDuration + test.results.total_duration,
+            loadDuration: acc.loadDuration + test.results.load_duration,
+            evalRate: {
+              count: acc.evalRate.count + test.results.eval_count,
+              duration: acc.evalRate.duration + test.results.eval_duration,
+            },
+          }),
+          {
+            totalDuration: 0,
+            loadDuration: 0,
+            evalRate: {
+              count: 0,
+              duration: 0,
+            },
+          },
+        );
+
+        const count = validTests.length;
+        return {
+          totalDuration: Math.round(sums.totalDuration / count),
+          loadDuration: Math.round(sums.loadDuration / count),
+          evalRate: sums.evalRate,
+        };
+      } catch (err) {
+        console.error("Error getting model averages:", err);
+        return null;
+      }
+    },
+    [db, getModelTests],
   );
 
   const clearAllModelTests = useCallback(async () => {
@@ -125,10 +162,9 @@ export const useHistory = () => {
   }, [db]);
 
   return {
-    isLoading,
-    error,
     addModelTest,
     getModelTests,
+    getModelAverages,
     clearAllModelTests,
   };
 };
