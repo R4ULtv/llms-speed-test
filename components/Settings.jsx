@@ -28,7 +28,6 @@ const DEFAULT_DIFFICULTY = "default";
 const DEFAULT_STREAM_MODE = false;
 
 export default function Settings() {
-  const [open, setOpen] = useState(false);
   const [host, setHost] = useState(DEFAULT_HOST);
   const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY);
   const [streamMode, setStreamMode] = useState(DEFAULT_STREAM_MODE);
@@ -43,14 +42,13 @@ export default function Settings() {
   }, [open]);
 
   const handleSave = useCallback(() => {
-    setOpen(false);
     localStorage.setItem("host", host);
     localStorage.setItem("difficulty", difficulty);
     localStorage.setItem("stream", streamMode);
   }, [host, difficulty, streamMode]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger
         aria-label="Settings"
         className="border border-zinc-200 p-2.5 rounded-lg"
@@ -151,21 +149,19 @@ export default function Settings() {
             </Select>
           </div>
           <DialogFooter>
-            <DialogClose asChild>
-              <button
-                type="button"
-                className="flex-1 border border-zinc-300 p-2 sm:p-1.5 rounded-lg"
-              >
-                Cancel
-              </button>
-            </DialogClose>
-            <button
-              onClick={handleSave}
+            <DialogClose
               type="button"
+              className="flex-1 border border-zinc-300 p-2 sm:p-1.5 rounded-lg"
+            >
+              Cancel
+            </DialogClose>
+            <DialogClose
+              type="button"
+              onClick={handleSave}
               className="flex-1 p-2 sm:p-1.5 bg-zinc-900 text-zinc-100 rounded-lg"
             >
               Save
-            </button>
+            </DialogClose>
           </DialogFooter>
         </form>
       </DialogContent>
