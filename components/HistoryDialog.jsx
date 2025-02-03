@@ -6,6 +6,7 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -107,18 +108,28 @@ export default function HistoryDialog() {
             )}
           </div>
         </div>
-        <DialogClose asChild>
-          <button
-            onClick={async () => {
-              await clearAllModelTests();
-              fetchData();
-            }}
-            type="button"
-            className="flex-1 p-2 sm:p-1.5 bg-zinc-900 text-zinc-100 rounded-lg"
-          >
-            Delete History
-          </button>
-        </DialogClose>
+        <DialogFooter>
+          <DialogClose asChild>
+            <button
+              type="button"
+              className="flex-1 border border-zinc-300 p-2 sm:p-1.5 rounded-lg"
+            >
+              Cancel
+            </button>
+          </DialogClose>
+          <DialogClose asChild>
+            <button
+              onClick={async () => {
+                await clearAllModelTests();
+                fetchData();
+              }}
+              type="button"
+              className="flex-1 p-2 sm:p-1.5 bg-zinc-900 text-zinc-100 rounded-lg"
+            >
+              Delete History
+            </button>
+          </DialogClose>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
