@@ -38,7 +38,9 @@ export const useHistory = () => {
           timestamp: new Date().toISOString(),
         };
 
-        return await database.add(STORE_NAME, testData);
+        const result = await database.add(STORE_NAME, testData);
+        window.dispatchEvent(new CustomEvent("testAdded"));
+        return result;
       } catch (err) {
         console.error("Error adding model test:", err);
         return null;

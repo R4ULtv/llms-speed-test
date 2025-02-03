@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -18,12 +18,20 @@ export default function HistoryDialog() {
   const { getModelTests, clearAllModelTests } = useHistory();
   const [data, setData] = useState([]);
 
+  const fetchData = useCallback(async () => {
+    setData(await getModelTests());
+  }, [getModelTests]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      setData(await getModelTests());
-    };
     fetchData();
-  }, []);
+
+    const handleTestAdded = fetchData;
+
+    window.addEventListener("testAdded", handleTestAdded);
+    return () => {
+      window.removeEventListener("testAdded", handleTestAdded);
+    };
+  }, [fetchData]);
 
   return (
     <Dialog>
@@ -101,7 +109,10 @@ export default function HistoryDialog() {
         </div>
         <DialogClose asChild>
           <button
-            onClick={() => clearAllModelTests()}
+            onClick={async () => {
+              await clearAllModelTests();
+              fetchData();
+            }}
             type="button"
             className="flex-1 p-2 sm:p-1.5 bg-zinc-900 text-zinc-100 rounded-lg"
           >
