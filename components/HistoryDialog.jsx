@@ -109,25 +109,21 @@ export default function HistoryDialog() {
           </div>
         </div>
         <DialogFooter>
-          <DialogClose asChild>
-            <button
-              type="button"
-              className="flex-1 border border-zinc-300 p-2 sm:p-1.5 rounded-lg"
-            >
-              Cancel
-            </button>
+          <DialogClose
+            type="button"
+            className="flex-1 border border-zinc-300 p-2 sm:p-1.5 rounded-lg"
+          >
+            Cancel
           </DialogClose>
-          <DialogClose asChild>
-            <button
-              onClick={async () => {
-                await clearAllModelTests();
-                fetchData();
-              }}
-              type="button"
-              className="flex-1 p-2 sm:p-1.5 bg-zinc-900 text-zinc-100 rounded-lg"
-            >
-              Delete History
-            </button>
+          <DialogClose
+            type="button"
+            onClick={async () => {
+              await clearAllModelTests();
+              fetchData();
+            }}
+            className="flex-1 p-2 sm:p-1.5 bg-zinc-900 text-zinc-100 rounded-lg"
+          >
+            Delete History
           </DialogClose>
         </DialogFooter>
       </DialogContent>
