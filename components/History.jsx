@@ -15,7 +15,7 @@ import { HistoryIcon } from "@/lib/icons";
 import { useHistory } from "@/hooks/useHistory";
 import { formatRate, formatTime } from "@/lib/formatting";
 
-export default function HistoryDialog() {
+export default function History() {
   const { getModelTests, clearAllModelTests } = useHistory();
   const [data, setData] = useState([]);
 
