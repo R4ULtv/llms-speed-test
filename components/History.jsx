@@ -52,7 +52,7 @@ export default function History() {
             </DialogDescription>
           </DialogHeader>
         </div>
-        <div className="max-h-[28rem] overflow-y-auto">
+        <div className="max-h-[28rem] overflow-y-auto scrollbar-thin">
           <div className="flex flex-col gap-2">
             {data.length > 0 ? (
               data.map((item) => (
