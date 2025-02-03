@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { HistoryIcon } from "@/lib/icons";
 import { useHistory } from "@/hooks/useHistory";
-import { formatRate } from "@/lib/formatting";
+import { formatRate, formatTime } from "@/lib/formatting";
 
 export default function HistoryDialog() {
   const { getModelTests, clearAllModelTests } = useHistory();
@@ -79,13 +79,13 @@ export default function HistoryDialog() {
                     <p className="text-zinc-700">
                       Total Duration:{" "}
                       <span className="font-medium">
-                        {(item.results.total_duration / 1000000).toFixed(2)}ms
+                        {formatTime(item.results.total_duration)}
                       </span>
                     </p>
                     <p className="text-zinc-700">
                       Load Duration:{" "}
                       <span className="font-medium">
-                        {(item.results.load_duration / 1000000).toFixed(2)}ms
+                        {formatTime(item.results.load_duration)}
                       </span>
                     </p>
                   </div>
