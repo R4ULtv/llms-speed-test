@@ -1,32 +1,50 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { getOllamaClient } from "@/lib/ollamaClient";
 import { DEFAULT_PROMPTS, EASY_PROMPTS, HARD_PROMPTS } from "@/lib/constants";
+import { useHistory } from "@/hooks/useHistory";
 
 export const useModelTest = (model) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   const [textStreaming, setTextStreaming] = useState("");
+  const [globalAvgs, setGlobalAvgs] = useState(null);
   const abortController = useRef(new AbortController());
   const isInitialRender = useRef(true);
   const isMounted = useRef(true);
+  const { addModelTest, getModelAverages } = useHistory();
 
   const ollama = useMemo(() => getOllamaClient(), []);
 
-  const processStreamResponse = useCallback(async (response, prompt) => {
-    setTextStreaming((prev) => prev + ` ${prompt} `);
-    for await (const part of response) {
-      if (!isMounted.current || abortController.current.signal.aborted) break;
-      setTextStreaming((prev) => prev + part.response);
-      if (part.done) {
-        setData((prev) => [...prev, part]);
+  const processStreamResponse = useCallback(
+    async (response, prompt, difficulty) => {
+      setTextStreaming((prev) => prev + ` ${prompt} `);
+      for await (const part of response) {
+        if (!isMounted.current || abortController.current.signal.aborted) break;
+        setTextStreaming((prev) => prev + part.response);
+        if (part.done) {
+          setData((prev) => [...prev, part]);
+          await addModelTest({
+            modelName: model,
+            results: part,
+            difficulty,
+            streamMode: true,
+          });
+        }
       }
-    }
-  }, []);
+    },
+    [],
+  );
 
-  const processNonStreamResponse = useCallback(async (response) => {
+  const processNonStreamResponse = useCallback(async (response, difficulty) => {
     if (isMounted.current) {
       setData((prev) => [...prev, response]);
+      await addModelTest({
+        modelName: model,
+        results: response,
+        difficulty,
+        streamMode: false,
+      });
     }
   }, []);
 
@@ -45,6 +63,7 @@ export const useModelTest = (model) => {
       const streamMode = localStorage.getItem("stream") === "true";
 
       try {
+        setGlobalAvgs(await getModelAverages(model));
         for (const prompt of PROMPTS) {
           if (!isMounted.current || abortController.current.signal.aborted)
             return;
@@ -57,8 +76,8 @@ export const useModelTest = (model) => {
           });
 
           await (streamMode
-            ? processStreamResponse(response, prompt)
-            : processNonStreamResponse(response));
+            ? processStreamResponse(response, prompt, difficulty)
+            : processNonStreamResponse(response, difficulty));
         }
       } catch (err) {
         if (isMounted.current && !abortController.current.signal.aborted) {
@@ -125,6 +144,7 @@ export const useModelTest = (model) => {
         count: sum.promptEvalCount,
         duration: sum.promptEvalDuration,
       },
+      globalAvgs,
     };
   }, [data]);
 

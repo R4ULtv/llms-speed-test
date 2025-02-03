@@ -1,7 +1,12 @@
 import { memo } from "react";
 import { motion } from "motion/react";
 
-import { ArrowDownTrayIcon, ShareIcon } from "@heroicons/react/16/solid";
+import {
+  ArrowDownTrayIcon,
+  ArrowTrendingDownIcon,
+  ArrowTrendingUpIcon,
+  ShareIcon,
+} from "@heroicons/react/16/solid";
 import { TextShimmer } from "@/components/animation/text-shimmer";
 
 import { formatTime, formatRate } from "@/lib/formatting";
@@ -83,28 +88,74 @@ const ResultItem = ({ response }) => (
   </div>
 );
 
-const AveragesSection = ({ averages }) => (
-  <div className="space-y-1 border-t border-dashed border-zinc-300 pt-4">
-    <MetricRow
-      label="avg total duration"
-      value={formatTime(averages.totalDuration)}
-    />
-    <MetricRow
-      label="avg load duration"
-      value={formatTime(averages.loadDuration)}
-    />
-    <MetricRow
-      label="avg eval rate"
-      value={`${formatRate(averages.evalRate.count, averages.evalRate.duration)} token/s`}
-    />
-  </div>
-);
+const AveragesSection = ({ averages }) => {
+  const getMetricTrend = (current, global, isEvalRate = false) => {
+    if (!averages.globalAvgs) return null;
 
-const MetricRow = ({ label, value }) => (
-  <div className="flex items-center justify-between">
-    {label} <span>{value}</span>
-  </div>
-);
+    const comparison = isEvalRate
+      ? current.count / current.duration < global.count / global.duration
+      : current < global;
+
+    return comparison
+      ? `down${isEvalRate ? "+inverted" : ""}`
+      : `up${isEvalRate ? "+inverted" : ""}`;
+  };
+
+  return (
+    <div className="space-y-1 border-t border-dashed border-zinc-300 pt-4">
+      <MetricRow
+        label="avg total duration"
+        value={formatTime(averages.totalDuration)}
+        trend={getMetricTrend(
+          averages.totalDuration,
+          averages.globalAvgs?.totalDuration,
+        )}
+      />
+      <MetricRow
+        label="avg load duration"
+        value={formatTime(averages.loadDuration)}
+        trend={getMetricTrend(
+          averages.loadDuration,
+          averages.globalAvgs?.loadDuration,
+        )}
+      />
+      <MetricRow
+        label="avg eval rate"
+        value={`${formatRate(averages.evalRate.count, averages.evalRate.duration)} token/s`}
+        trend={getMetricTrend(
+          averages.evalRate,
+          averages.globalAvgs?.evalRate,
+          true,
+        )}
+      />
+    </div>
+  );
+};
+
+const MetricRow = ({ label, value, trend }) => {
+  const getTrendIcon = () => {
+    if (!trend) return null;
+
+    const isDown = trend.startsWith("down");
+    const Icon = isDown ? ArrowTrendingDownIcon : ArrowTrendingUpIcon;
+    const colorClass =
+      trend === "down" || trend === "up+inverted"
+        ? "text-green-500"
+        : "text-red-500";
+
+    return <Icon className={`size-4 ${colorClass}`} />;
+  };
+
+  return (
+    <div className="flex items-center justify-between">
+      {label}
+      <span className="flex items-center gap-1">
+        {getTrendIcon()}
+        {value}
+      </span>
+    </div>
+  );
+};
 
 const ActionButtons = ({ data, averages, componentRef }) => (
   <div
