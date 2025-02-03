@@ -1,18 +1,13 @@
+import { openDB } from "idb";
 import { useState, useCallback } from "react";
 
 const DB_NAME = "HistoryDB";
 const DB_VERSION = 1;
 const STORE_NAME = "tests";
 
-export const initDB = () => {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-    request.onerror = () => reject(request.error);
-    request.onsuccess = () => resolve(request.result);
-
-    request.onupgradeneeded = (event) => {
-      const db = event.target.result;
+export const initDB = async () => {
+  return await openDB(DB_NAME, DB_VERSION, {
+    upgrade(db) {
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         const store = db.createObjectStore(STORE_NAME, {
           keyPath: "id",
@@ -22,7 +17,7 @@ export const initDB = () => {
         store.createIndex("modelName", "modelName", { unique: false });
         store.createIndex("difficulty", "difficulty", { unique: false });
       }
-    };
+    },
   });
 };
 
@@ -35,8 +30,6 @@ export const useHistory = () => {
         const database = db || (await initDB());
         if (!db) setDb(database);
 
-        const transaction = database.transaction([STORE_NAME], "readwrite");
-        const store = transaction.objectStore(STORE_NAME);
         const testData = {
           modelName,
           difficulty,
@@ -45,11 +38,7 @@ export const useHistory = () => {
           timestamp: new Date().toISOString(),
         };
 
-        return new Promise((resolve, reject) => {
-          const request = store.add(testData);
-          request.onsuccess = () => resolve(request.result);
-          request.onerror = () => reject(request.error);
-        });
+        return await database.add(STORE_NAME, testData);
       } catch (err) {
         console.error("Error adding model test:", err);
         return null;
@@ -59,42 +48,27 @@ export const useHistory = () => {
   );
 
   const getModelTests = useCallback(
-    async (modelName = null, limit = 50, offset = 0) => {
+    async (modelName = null) => {
       try {
         const database = db || (await initDB());
         if (!db) setDb(database);
 
-        return new Promise((resolve, reject) => {
-          const transaction = database.transaction([STORE_NAME], "readonly");
-          const store = transaction.objectStore(STORE_NAME);
-          const index = modelName
-            ? store.index("modelName")
-            : store.index("timestamp");
-          const tests = [];
-          let advanced = false;
+        const tx = database.transaction(STORE_NAME, "readonly");
+        const index = modelName
+          ? tx.store.index("modelName")
+          : tx.store.index("timestamp");
 
-          const request = modelName
-            ? index.openCursor(IDBKeyRange.only(modelName), "prev")
-            : index.openCursor(null, "prev");
+        const tests = [];
+        let cursor = await (modelName
+          ? index.openCursor(modelName, "prev")
+          : index.openCursor(null, "prev"));
 
-          request.onsuccess = (event) => {
-            const cursor = event.target.result;
-            if (!advanced && offset > 0) {
-              advanced = true;
-              cursor.advance(offset);
-              return;
-            }
+        while (cursor) {
+          tests.push(cursor.value);
+          cursor = await cursor.continue();
+        }
 
-            if (cursor && tests.length < limit) {
-              tests.push(cursor.value);
-              cursor.continue();
-            } else {
-              resolve(tests);
-            }
-          };
-
-          request.onerror = () => reject(request.error);
-        });
+        return tests;
       } catch (err) {
         console.error("Error getting model tests:", err);
         return [];
@@ -149,16 +123,16 @@ export const useHistory = () => {
   );
 
   const clearAllModelTests = useCallback(async () => {
-    if (!db) return false;
+    const database = db || (await initDB());
+    if (!db) setDb(database);
 
-    return new Promise((resolve, reject) => {
-      const transaction = db.transaction([STORE_NAME], "readwrite");
-      const store = transaction.objectStore(STORE_NAME);
-      const request = store.clear();
-
-      request.onsuccess = () => resolve(true);
-      request.onerror = () => reject(request.error);
-    });
+    try {
+      await database.clear(STORE_NAME);
+      return true;
+    } catch (err) {
+      console.error("Error clearing tests:", err);
+      return false;
+    }
   }, [db]);
 
   return {
