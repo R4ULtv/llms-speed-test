@@ -9,6 +9,13 @@ import {
 } from "@heroicons/react/16/solid";
 import { TextShimmer } from "@/components/animation/text-shimmer";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import { formatTime, formatRate } from "@/lib/formatting";
 import { exportToCSV, exportToPNG, handleShare } from "@/lib/exportUtils";
 
@@ -103,36 +110,49 @@ const AveragesSection = ({ averages }) => {
 
   return (
     <div className="space-y-1 border-t border-dashed border-zinc-300 pt-4">
-      <MetricRow
-        label="avg total duration"
-        value={formatTime(averages.totalDuration)}
-        trend={getMetricTrend(
-          averages.totalDuration,
-          averages.globalAvgs?.totalDuration,
-        )}
-      />
-      <MetricRow
-        label="avg load duration"
-        value={formatTime(averages.loadDuration)}
-        trend={getMetricTrend(
-          averages.loadDuration,
-          averages.globalAvgs?.loadDuration,
-        )}
-      />
-      <MetricRow
-        label="avg eval rate"
-        value={`${formatRate(averages.evalRate.count, averages.evalRate.duration)} token/s`}
-        trend={getMetricTrend(
-          averages.evalRate,
-          averages.globalAvgs?.evalRate,
-          true,
-        )}
-      />
+      <TooltipProvider>
+        <MetricRow
+          label="avg total duration"
+          value={formatTime(averages.totalDuration)}
+          trend={getMetricTrend(
+            averages.totalDuration,
+            averages.globalAvgs?.totalDuration,
+          )}
+          tooltipContent={
+            averages.globalAvgs &&
+            formatTime(averages.globalAvgs?.totalDuration)
+          }
+        />
+        <MetricRow
+          label="avg load duration"
+          value={formatTime(averages.loadDuration)}
+          trend={getMetricTrend(
+            averages.loadDuration,
+            averages.globalAvgs?.loadDuration,
+          )}
+          tooltipContent={
+            averages.globalAvgs && formatTime(averages.globalAvgs?.loadDuration)
+          }
+        />
+        <MetricRow
+          label="avg eval rate"
+          value={`${formatRate(averages.evalRate.count, averages.evalRate.duration)} token/s`}
+          trend={getMetricTrend(
+            averages.evalRate,
+            averages.globalAvgs?.evalRate,
+            true,
+          )}
+          tooltipContent={
+            averages.globalAvgs &&
+            `${formatRate(averages.globalAvgs.evalRate.count, averages.globalAvgs.evalRate.duration)} token/s`
+          }
+        />
+      </TooltipProvider>
     </div>
   );
 };
 
-const MetricRow = ({ label, value, trend }) => {
+const MetricRow = ({ label, value, trend, tooltipContent }) => {
   const getTrendIcon = () => {
     if (!trend) return null;
 
@@ -149,10 +169,22 @@ const MetricRow = ({ label, value, trend }) => {
   return (
     <div className="flex items-center justify-between">
       {label}
-      <span className="flex items-center gap-1">
-        {getTrendIcon()}
-        {value}
-      </span>
+      {tooltipContent ? (
+        <Tooltip>
+          <TooltipTrigger>
+            <span className="flex items-center gap-1">
+              {getTrendIcon()}
+              {value}
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>{tooltipContent}</TooltipContent>
+        </Tooltip>
+      ) : (
+        <span className="flex items-center gap-1">
+          {getTrendIcon()}
+          {value}
+        </span>
+      )}
     </div>
   );
 };
