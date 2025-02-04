@@ -5,7 +5,9 @@ import { toast } from "sonner";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -44,11 +46,14 @@ export default function ModelSelector() {
             align="center"
             className="[&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]]:pe-12 [&_*[role=option]]:ps-2"
           >
-            {models.map((item) => (
-              <SelectItem key={item.name} value={item.name}>
-                <ModelListItem item={item} />
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              <SelectLabel>Ollama</SelectLabel>
+              {models.map((item) => (
+                <SelectItem key={item.name} value={item.name}>
+                  <ModelListItem item={item} />
+                </SelectItem>
+              ))}
+            </SelectGroup>
             {error && (
               <SelectItem value="error" disabled>
                 Error loading models
