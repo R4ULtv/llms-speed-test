@@ -31,6 +31,7 @@ export default function Settings() {
   const [host, setHost] = useState(DEFAULT_HOST);
   const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY);
   const [streamMode, setStreamMode] = useState(DEFAULT_STREAM_MODE);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const savedHost = localStorage.getItem("host");
@@ -41,6 +42,17 @@ export default function Settings() {
     if (savedStreamMode !== null) setStreamMode(savedStreamMode === "true");
   }, []);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "s") {
+        setOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const handleSave = useCallback(() => {
     localStorage.setItem("host", host);
     localStorage.setItem("difficulty", difficulty);
@@ -48,7 +60,7 @@ export default function Settings() {
   }, [host, difficulty, streamMode]);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         aria-label="Settings"
         className="border border-zinc-200 p-2.5 rounded-lg"

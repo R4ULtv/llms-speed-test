@@ -18,6 +18,7 @@ import { formatRate, formatTime } from "@/lib/formatting";
 export default function History() {
   const { getModelTests, clearAllModelTests } = useHistory();
   const [data, setData] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const fetchData = useCallback(async () => {
     setData(await getModelTests());
@@ -34,8 +35,19 @@ export default function History() {
     };
   }, [fetchData]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "h") {
+        setOpen(true);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         aria-label="History"
         className="border border-zinc-200 p-2.5 rounded-lg fixed bottom-5 right-5"
