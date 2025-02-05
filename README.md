@@ -12,23 +12,27 @@ Get quick performance metrics and comparisons for your local LLMs.
 
 ### Performance Metrics
 - Real-time performance monitoring
-- Key metrics tracking:
+- Comprehensive metrics tracking:
   - Total Duration (ms)
   - Load Duration (ms)
   - Evaluation Rate (tokens/second)
+  - GPU Memory Usage
 - Live text streaming display
+- Global and session-based averages
 
 ### Results Analysis
-- Individual test results
+- Individual test results with detailed breakdowns
 - Automated averages calculation
 - Performance trends visualization
-- Real-time updates
+- Comparative analysis against global averages
+- Real-time GPU utilization monitoring
 
 ### Export & Sharing
-- PNG screenshot export
-- CSV data export
-- Built-in sharing functionality
+- Screenshot export with styled PNG output
+- Detailed CSV data export
+- One-click sharing functionality
 - Formatted test reports
+- Historical data persistence
 
 ## Technologies
 
@@ -37,18 +41,21 @@ Get quick performance metrics and comparisons for your local LLMs.
 - React 19
 - Tailwind CSS v4
 - Motion
-- Radix UI
+- Radix UI Components
 
 ### UI Components
-- Sonner (Toast notifications)
+- Custom Dialog components
+- Sonner for Toast notifications
 - Heroicons
-- Custom animations and transitions
+- Advanced animations with Motion One
+- Custom tooltips and popovers
 
 ## Setup
 
 1. Prerequisites:
-- Node.js
+- Node.js 20+
 - Ollama installed and running locally
+- OLLAMA_ORIGINS configured for API access
 
 2. Install dependencies:
 ```bash
@@ -64,10 +71,13 @@ npm run dev
 
 ## Usage
 
-1. Select a model from the dropdown menu
-2. View real-time performance metrics
-3. Export or share your results
-4. Compare different models
+1. Select a model from the intuitive dropdown
+2. Configure test settings (difficulty, streaming mode)
+3. View real-time performance metrics
+4. Export or share your results
+5. Compare with global averages
+6. Access history with Ctrl+Shift+H
+7. Open settings with Ctrl+Shift+S
 
 ## License
 This project is open source and available under the MIT license.
