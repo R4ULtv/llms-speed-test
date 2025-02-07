@@ -40,7 +40,7 @@ export default function Settings() {
     if (savedHost) setHost(savedHost);
     if (savedDifficulty) setDifficulty(savedDifficulty);
     if (savedStreamMode !== null) setStreamMode(savedStreamMode === "true");
-  }, []);
+  }, [open]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
