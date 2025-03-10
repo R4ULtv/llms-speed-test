@@ -15,20 +15,20 @@
     "@radix-ui/react-select": "^2.1.5",
     "@radix-ui/react-tooltip": "^1.1.7",
     "clsx": "^2.1.1",
-    "html-to-image": "^1.11.11",
+    "html-to-image": "^1.11.13",
     "idb": "^8.0.2",
-    "motion": "^12.0.5",
-    "next": "^15.1.6",
-    "ollama": "^0.5.12",
+    "motion": "^12.4.10",
+    "next": "^15.2.1",
+    "ollama": "^0.5.14",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "sonner": "^1.7.2",
-    "tailwind-merge": "^3.0.1",
+    "sonner": "^1.7.4",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.3",
+    "@tailwindcss/postcss": "^4.0.12",
     "postcss": "^8",
-    "tailwindcss": "^4.0.3"
+    "tailwindcss": "^4.0.12"
   }
 }
