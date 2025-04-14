@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@plugin "tailwindcss-animate";
+@import "tw-animate-css";
 
 @utility scrollbar-thin {
     scrollbar-width: thin;
