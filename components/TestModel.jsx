@@ -2,6 +2,7 @@ import { useRef } from "react";
 import { motion } from "motion/react";
 import { TestResults } from "@/components/TestResults";
 import { useModelTest } from "@/hooks/useModelTest";
+import { ScrollArea } from "@/components/ui/scrool-area";
 
 export const TestModel = ({ model, onBack }) => {
   const componentRef = useRef();
@@ -44,9 +45,9 @@ export const TestModel = ({ model, onBack }) => {
           <div className="border-b border-dashed border-zinc-300 pb-2 text-zinc-700">
             Text Streaming
           </div>
-          <div className="flex flex-col-reverse overflow-y-auto overflow-x-hidden scrollbar-thin">
+          <ScrollArea reverse className="h-[497px]">
             {textStreaming}
-          </div>
+          </ScrollArea>
         </motion.div>
       )}
     </div>
