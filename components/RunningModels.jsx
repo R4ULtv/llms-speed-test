@@ -78,7 +78,8 @@ export default function RunningModels() {
               />
             </div>
             <span className="text-xs text-zinc-900 font-semibold">
-              {data[0].name} - GPU {getGPURatio}%
+              {data[0].name} - GPU {getGPURatio}% / CPU{" "}
+              {Math.max(0, 100 - getGPURatio)}%
             </span>
           </div>
         </motion.div>
