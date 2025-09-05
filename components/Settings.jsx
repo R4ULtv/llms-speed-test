@@ -26,20 +26,25 @@ import { Checkbox } from "@/components/ui/checkbox";
 const DEFAULT_HOST = "http://127.0.0.1:11434";
 const DEFAULT_DIFFICULTY = "default";
 const DEFAULT_STREAM_MODE = false;
+const DEFAULT_NUM_GPU = 0;
 
 export default function Settings() {
   const [host, setHost] = useState(DEFAULT_HOST);
   const [difficulty, setDifficulty] = useState(DEFAULT_DIFFICULTY);
   const [streamMode, setStreamMode] = useState(DEFAULT_STREAM_MODE);
+  const [numGpu, setNumGpu] = useState(DEFAULT_NUM_GPU);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const savedHost = localStorage.getItem("host");
     const savedDifficulty = localStorage.getItem("difficulty");
     const savedStreamMode = localStorage.getItem("stream");
+    const savedNumGpu = localStorage.getItem("num_gpu");
     if (savedHost) setHost(savedHost);
     if (savedDifficulty) setDifficulty(savedDifficulty);
     if (savedStreamMode !== null) setStreamMode(savedStreamMode === "true");
+    if (savedNumGpu !== null)
+      setNumGpu(parseInt(savedNumGpu, 10) || DEFAULT_NUM_GPU);
   }, [open]);
 
   useEffect(() => {
@@ -57,7 +62,8 @@ export default function Settings() {
     localStorage.setItem("host", host);
     localStorage.setItem("difficulty", difficulty);
     localStorage.setItem("stream", streamMode);
-  }, [host, difficulty, streamMode]);
+    localStorage.setItem("num_gpu", numGpu.toString());
+  }, [host, difficulty, streamMode, numGpu]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -75,7 +81,7 @@ export default function Settings() {
           <DialogHeader>
             <DialogTitle className="sm:text-center">Settings</DialogTitle>
             <DialogDescription className="sm:text-center">
-              Configure your Ollama host and test difficulty settings.
+              Configure your Ollama host, GPU settings, and test difficulty.
             </DialogDescription>
           </DialogHeader>
         </div>
@@ -120,6 +126,39 @@ export default function Settings() {
                 here
               </a>
               .
+            </p>
+          </div>
+          <div className="space-y-2">
+            <label
+              htmlFor="numGpu"
+              className="text-sm font-medium text-zinc-700"
+            >
+              Number of GPU Layers
+            </label>
+            <div className="relative">
+              <Input
+                id="numGpu"
+                type="number"
+                min="0"
+                placeholder={DEFAULT_NUM_GPU.toString()}
+                value={numGpu}
+                onChange={(e) => setNumGpu(parseInt(e.target.value) || 0)}
+                className="mt-1 rounded-lg [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              />
+              {numGpu !== DEFAULT_NUM_GPU && (
+                <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                  <button
+                    type="button"
+                    onClick={() => setNumGpu(DEFAULT_NUM_GPU)}
+                    className="text-xs text-zinc-700 hover:underline"
+                  >
+                    <ArrowUturnLeftIcon className="size-3" />
+                  </button>
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-zinc-700">
+              Set the number of GPU layers. Set to 0 for automatic detection.
             </p>
           </div>
           <div className="space-y-2">
