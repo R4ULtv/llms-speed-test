@@ -61,6 +61,7 @@ export const useModelTest = (model) => {
         }[difficulty] || DEFAULT_PROMPTS;
 
       const streamMode = localStorage.getItem("stream") === "true";
+      const numGpu = parseInt(localStorage.getItem("num_gpu"), 10) || 0;
 
       try {
         setGlobalAvgs(await getModelAverages(model));
@@ -72,6 +73,7 @@ export const useModelTest = (model) => {
             model,
             prompt,
             ...(streamMode && { stream: true }),
+            ...(numGpu > 0 && { options: { num_gpu: numGpu } }),
             signal: abortController.current.signal,
           });
 
